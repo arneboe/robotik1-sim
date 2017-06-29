@@ -149,8 +149,14 @@ void Simulator::advanceStep(int index, int timeInStep)
     
     if(si.atTime[odoIdxInStep] >= timeInStep)
     {
-        move(si.posDiff[odoIdxInStep].x(),si.posDiff[odoIdxInStep].y(),stepInfo[index].dirChange,
-            stepInfo[index].posChangeVariance.x(),stepInfo[index].posChangeVariance.y(),stepInfo[index].dirChangeVariance);
+        const StepInfo &sti(stepInfo[index]);
+        
+        Eigen::Vector2f trVariance = si.posDiff[odoIdxInStep] * sti.trError;
+        trVariance.cwiseMax(sti.minTrVariance);
+        double rotVariance = std::max((sti.dirChange * sti.rotError) / si.length, sti.minRotVariance);
+        
+        move(si.posDiff[odoIdxInStep].x(),si.posDiff[odoIdxInStep].y(),sti.dirChange,
+            trVariance.x(), trVariance.y(), rotVariance);
         
         odoIdxInStep++;
         std::cout << "Did Sub Step " << index << std::endl;

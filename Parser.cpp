@@ -99,6 +99,35 @@ std::string getValue(const std::string &line, double &value)
         return line.substr(end + 1, line.size());  
 }
 
+void getNamedValue(const std::string &line, const std::string &name, double &value)
+{
+        size_t end = line.find_first_of(' ');
+        if(end == std::string::npos)
+        {
+            throw std::runtime_error("Unexpected end of line parsing odometry info");
+        }
+        
+        std::string names = line.substr(0, end);
+        assert(name == names);
+        
+        std::string val = line.substr(end+1, line.size());
+        
+        value = atof(val.c_str());
+        
+        std::cout << "Value of "<< name << " " << value << std::endl;
+}
+
+bool toNextLine(std::ifstream &file, std::string &line)
+{
+    do {
+        if(!std::getline(file, line))
+            return false;
+    }
+    while(line.empty() || line.at(0) == '#' );
+
+    return true;
+}
+
 std::vector< StepInfo > Parser::getStepInfo(std::string& path)
 {
     std::vector< StepInfo > ret;
@@ -114,76 +143,61 @@ std::vector< StepInfo > Parser::getStepInfo(std::string& path)
     size_t stepCnt = 0;
     
     std::string line;
-    int linecnt = 0;
-    bool done = false;
-    while(!done)
+    
+    if(!toNextLine(file, line))
+        throw std::runtime_error("Parse error");
+
+    double trError;
+    getNamedValue(line, "ErrorTranslation", trError);
+
+    if(!toNextLine(file, line))
+        throw std::runtime_error("Parse error");
+
+    double minTrVarX;
+    getNamedValue(line, "MinVarianceTranslationX", minTrVarX);
+
+    if(!toNextLine(file, line))
+        throw std::runtime_error("Parse error");
+
+    double minTrVarY;
+    getNamedValue(line, "MinVarianceTranslationY", minTrVarY);
+
+    if(!toNextLine(file, line))
+        throw std::runtime_error("Parse error");
+
+    double errorRotation;
+    getNamedValue(line, "ErrorRotation", errorRotation);
+
+    if(!toNextLine(file, line))
+        throw std::runtime_error("Parse error");
+    
+    double minRotVar;
+    getNamedValue(line, "MinVarianceRotation", minRotVar);
+
+    StepInfo info;
+    info.minRotVariance = minRotVar / 180.0 * M_PI;
+    info.minTrVariance = Eigen::Vector2f(minTrVarX, minTrVarY);
+    info.trError = trError;
+    info.rotError = errorRotation;
+    
+    while(toNextLine(file, line))
     {
-        while(line.empty())
-        {
-            if(!std::getline(file, line))
-            {
-                done = true;
-                break;
-            }
-        }
-
-        if(done)
-            break;
         
-        
-        StepInfo info;
-
-        while(line.at(0) == '#')
-        {
-            if(!std::getline(file, line))
-                throw std::runtime_error("Parse error");
-        }
-
-        std::cout << "Line " << line << std::endl;
-        
-        line = getValue(line, info.posChangeVariance[0]);
-        std::cout << "Line " << line << std::endl;
-        line = getValue(line, info.posChangeVariance[1]);
-
-        std::cout << "Got Pos Variance" << std::endl;
-        
-        do {
-            if(!std::getline(file, line))
-                throw std::runtime_error("Parse error");
-        }
-        while(line.at(0) == '#');
-
-        std::cout << "Line " << line << std::endl;
-
         line = getValue(line, info.dirChange);
-        std::cout << "Line " << line << std::endl;
-        line = getValue(line, info.dirChangeVariance);
 
-        std::cout << "Got Angle Variance" << std::endl;
+        info.dirChange = info.dirChange / 180.0 * M_PI;
         
         ret.push_back(info);
 	
         stepCnt++;
-
-        
-        if(!std::getline(file, line))
-            break;
-        while(line.empty() || line.at(0) == '#' )
-        {
-            if(!std::getline(file, line))
-            {
-                done = true;
-                break;
-            }
-        }
     }
     
     std::cout << "Found " << stepCnt << " StepInformations " << std::endl;
     for(int i = 0; i < stepCnt; i++)
     {
         std::cout << "Step " << i << std::endl;
-        std::cout << "Pos Variance " << ret[i].posChangeVariance.x() << " " << ret[i].posChangeVariance.y() << std::endl;
-        std::cout << "Angle " << ret[i].dirChange << " Variance " << ret[i].dirChangeVariance << std::endl;
+        std::cout << "Pos Variance " << ret[i].minTrVariance.transpose() << std::endl;
+        std::cout << "Angle " << ret[i].dirChange / M_PI * 180.0 << " Variance " << ret[i].minRotVariance / M_PI * 180.0 << std::endl;
         std::cout << std::endl;
     }
     

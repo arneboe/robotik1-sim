@@ -1,42 +1,47 @@
-#Diese Datei enthält für jeden Step, den der Roboter beherscht die Varianz und die Winkeländerung.
-#Varianz = Genauigkeit des Steps.
-#Winkeländerung = Wie dreht sich der Roboter während der Bewegung
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
-0.0 0.01
+#Diese Datei enthält die globale einstellung 
+#des fehlers in % für drehung und translation,
+#sowie die mindestabweichung für drehung und translation
+#sowie die drehung pro schritt.
+#5% fehler bei der translation
+ErrorTranslation 0.05
+#Minimale varianz der translation 0.02 vorwärts 0.01 seitwärts m
+MinVarianceTranslationX 0.02
+MinVarianceTranslationY 0.01
 
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
-1.4 0.01
+#10% fehler bei der rotation
+ErrorRotation 0.1
+#8 Grad minimale varianz bei der rotation
+MinVarianceRotation 8
 
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
--1.4 0.01
+#Rotation bei der Ausführung von schritt 0 in GRAD
+#FORWARD
+0.0
 
-#Varianz des schrittes
-0.01 0.1
-##winkeländerung des roboters / Varianz davon
-0.0 0.01
+#Rotation bei der Ausführung von schritt 1 in GRAD
+#LEFT_45
+45
 
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
-0.0 0.01
+#Rotation bei der Ausführung von schritt 2 in GRAD
+#RIGHT_45
+-45
 
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
-1.56 0.01
+#Rotation bei der Ausführung von schritt 3 in GRAD
+#SIDEWARD_LEFT
+0.0
 
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
--1.56 0.01
+#Rotation bei der Ausführung von schritt 4 in GRAD
+#SIDEWARD_RIGHT
+0.0
 
-#Varianz des schrittes
-0.01 0.01
-##winkeländerung des roboters / Varianz davon
-0.0 0.01
+#Rotation bei der Ausführung von schritt 5 in GRAD
+#TURN_45_LEFT
+90
+
+#Rotation bei der Ausführung von schritt 6 in GRAD
+#TURN_45_RIGHT
+-90
+
+#Rotation bei der Ausführung von schritt 7 in GRAD
+#BACKWARD
+0
+

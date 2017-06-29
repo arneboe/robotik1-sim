@@ -6,10 +6,11 @@
 class StepInfo
 {
 public:
-    Eigen::Vector3d posChange;
-    Eigen::Vector3d posChangeVariance;
+    double trError;
+    Eigen::Vector2f minTrVariance;
     double dirChange;
-    double dirChangeVariance;
+    double rotError;
+    double minRotVariance;
 };
 
 class Robot
