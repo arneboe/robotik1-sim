@@ -133,7 +133,7 @@ extern Odometry *odomtryG;
 
 void Simulator::advanceStep(int index, int timeInStep)
 {
-    if(stepInfo.size() < index)
+    if((int) stepInfo.size() < index)
     {
         throw std::runtime_error("Error, no stepInfo give for step");
     }

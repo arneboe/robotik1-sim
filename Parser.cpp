@@ -193,7 +193,7 @@ std::vector< StepInfo > Parser::getStepInfo(std::string& path)
     }
     
     std::cout << "Found " << stepCnt << " StepInformations " << std::endl;
-    for(int i = 0; i < stepCnt; i++)
+    for(size_t i = 0; i < stepCnt; i++)
     {
         std::cout << "Step " << i << std::endl;
         std::cout << "Pos Variance " << ret[i].minTrVariance.transpose() << std::endl;
