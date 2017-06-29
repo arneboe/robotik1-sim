@@ -1,5 +1,5 @@
 
-=== Simulator starten ===
+--- Simulator starten ---
 
 Damit der Simulator startet müssen die Dateien parcour.txt und stepinfo.txt im aktuellen Verzeichnis liegen.
 Der Simulator wartet beim Starten auf eine IPC Verbindung. D.h. der ImageViewer muss ebenfalls gestartet werden.
