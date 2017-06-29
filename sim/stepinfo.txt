@@ -1,0 +1,42 @@
+#Diese Datei enthält für jeden Step, den der Roboter beherscht die Varianz und die Winkeländerung.
+#Varianz = Genauigkeit des Steps.
+#Winkeländerung = Wie dreht sich der Roboter während der Bewegung
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+0.0 0.01
+
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+1.4 0.01
+
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+-1.4 0.01
+
+#Varianz des schrittes
+0.01 0.1
+##winkeländerung des roboters / Varianz davon
+0.0 0.01
+
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+0.0 0.01
+
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+1.56 0.01
+
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+-1.56 0.01
+
+#Varianz des schrittes
+0.01 0.01
+##winkeländerung des roboters / Varianz davon
+0.0 0.01
