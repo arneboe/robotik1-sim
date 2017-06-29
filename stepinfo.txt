@@ -11,7 +11,7 @@ MinVarianceTranslationY 0.01
 #10% fehler bei der rotation
 ErrorRotation 0.1
 #8 Grad minimale varianz bei der rotation
-MinVarianceRotation 8
+MinVarianceRotation 2
 
 #Rotation bei der Ausführung von schritt 0 in GRAD
 #FORWARD
@@ -35,11 +35,11 @@ MinVarianceRotation 8
 
 #Rotation bei der Ausführung von schritt 5 in GRAD
 #TURN_45_LEFT
-90
+45
 
 #Rotation bei der Ausführung von schritt 6 in GRAD
 #TURN_45_RIGHT
--90
+-49
 
 #Rotation bei der Ausführung von schritt 7 in GRAD
 #BACKWARD

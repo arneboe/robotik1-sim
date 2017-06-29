@@ -155,11 +155,11 @@ void Simulator::advanceStep(int index, int timeInStep)
         trVariance.cwiseMax(sti.minTrVariance);
         double rotVariance = std::max((sti.dirChange * sti.rotError) / si.length, sti.minRotVariance);
         
-        move(si.posDiff[odoIdxInStep].x(),si.posDiff[odoIdxInStep].y(),sti.dirChange,
+        move(si.posDiff[odoIdxInStep].x(),si.posDiff[odoIdxInStep].y(),sti.dirChange / si.length,
             trVariance.x(), trVariance.y(), rotVariance);
         
         odoIdxInStep++;
-        std::cout << "Did Sub Step " << index << std::endl;
+//         std::cout << "Did Sub Step " << index << std::endl;
     }
     
 }
@@ -188,33 +188,34 @@ double Random::gaussianRandom()
            s = v1 * v1 + v2 * v2;
        } while (s >= 1 || s == 0);
        double multiplier = sqrt(-2 * log(s)/s);
-       nextGaussian = v2 * multiplier;
+       nextGaussian = v2 * multiplier / 8;
        haveNextGaussian = true;
-       return v1 * multiplier;
+       
+       return v1 * multiplier / 8;
    }
 }
 
 void Simulator::move(double x, double y, double angle, double varX, double varY, double varAngle)
 {
-    std::cout << "Move " << x << " " << y << " " << angle << std::endl;
+//     std::cout << "Move " << x << " " << y << " Angle " << angle / M_PI * 180 << " Var " << varAngle  / M_PI * 180 <<  std::endl;
     Random r;
     double x_mov = x + r.gaussianRandom() * varX;
     double y_mov = y + r.gaussianRandom() * varY;
     double angle_mov = angle + r.gaussianRandom() * varAngle;
-    std::cout << "Move with Noise " << x_mov << " " << y_mov << " Angle " << angle_mov << std::endl;
+//     std::cout << "Move with Noise " << x_mov << " " << y_mov << " Angle " << angle_mov  / M_PI * 180 << std::endl;
     
     Eigen::Vector3d mov(x_mov, y_mov, 0);
     Eigen::Quaterniond rot(Eigen::AngleAxisd(angle_mov, Eigen::Vector3d::UnitZ()));
     mov = robot.getOrientation() * mov;
     Eigen::Vector3d nextPos3d = robot.getPosition() + mov;
-    std::cout << "Move Displ " << mov.transpose() << std::endl;
+//     std::cout << "Move Displ " << mov.transpose() << std::endl;
     
     //perform collision detection
     Eigen::Vector2d curPos = Eigen::Vector2d(robot.getPosition().x(), robot.getPosition().y());
     Eigen::Vector2d nextPos = Eigen::Vector2d(nextPos3d.x(), nextPos3d.y());
     Eigen::Vector2d diffPos = nextPos - curPos;
 
-    std::cout << "Moving from " << curPos.transpose() << " to " << nextPos.transpose() << std::endl; 
+//     std::cout << "Moving from " << curPos.transpose() << " to " << nextPos.transpose() << std::endl; 
     
     //1cm steps
     double stepWidth = 0.01;
@@ -237,13 +238,13 @@ void Simulator::move(double x, double y, double angle, double varX, double varY,
     for(std::vector<double>::const_iterator curStep = steps.begin(); curStep != steps.end() && !collision; curStep++)
     {
 	Eigen::Vector2d stepPos = curPos + diffPos * (*curStep/length);
-	std::cout << "StepPos " << stepPos.transpose() << std::endl;
+// 	std::cout << "StepPos " << stepPos.transpose() << std::endl;
 	for(std::vector< ::Box >::const_iterator it = parcour->getBoxes().begin(); it != parcour->getBoxes().end();it++)
 	{
 	    if(it->bb.contains(stepPos))
 	    {
 		collision = true;
-		std::cout << "Collision at:" << stepPos.transpose() << " with box " << it->position.transpose() << std::endl;
+// 		std::cout << "Collision at:" << stepPos.transpose() << " with box " << it->position.transpose() << std::endl;
 
 		break;
 	    }
@@ -253,7 +254,7 @@ void Simulator::move(double x, double y, double angle, double varX, double varY,
 	{
 	    if((Eigen::Vector2d(it->position.x(), it->position.y()) - stepPos).norm() <= it->radius)
 	    {
-		std::cout << "Collision at:" << stepPos.transpose() << std::endl;
+// 		std::cout << "Collision at:" << stepPos.transpose() << std::endl;
 		collision = true;
 		break;
 	    }
@@ -262,7 +263,7 @@ void Simulator::move(double x, double y, double angle, double varX, double varY,
 	    lastNonCollidingPos = stepPos;
     }
 
-    std::cout << "Collided:" << collision << std::endl;
+//     std::cout << "Collided:" << collision << std::endl;
 
     
     robotPositionLock.lock();
